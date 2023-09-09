@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "spotideets"
+version = "0.1.0"
+description = "Detailed statistics about spotify listening habits, such as top tracks, genres and artists over various time periods"
+authors = ["Temiloluwa Samuel <65780579+stemitom@users.noreply.github.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "3.2.10"
+djangorestframework = "3.13.1"
+drf-yasg = {extras = ["validation"], version = "^1.21.7"}
+django-environ = "^0.11.2"
+redis = "^5.0.0"
+gunicorn = "^21.2.0"
+psycopg2-binary = "^2.9.7"
+
+[tool.poetry.dev-dependencies]
+ruff = "^0.0.282"
+mypy = "^1.4.1"
+black = "^23.7.0"
+isort = "^5.12.0"
+pylint = "^2.17.5"
+django-stubs = "^4.2.3"
+djangorestframework-stubs = "^3.14.2"
+pytest = "^7.4.0"
+pytest-django = "^4.5.2"
+pytest-cov = "^4.1.0"
+ipdb = "^0.13.13"
+pytest-deadfixtures = "^2.2.1"
+pytest-sugar = "^0.9.7"
+pylint-django = "^2.5.3"
+pyinstrument = "^4.5.1"
+ipython = "^8.14.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
