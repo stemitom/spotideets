@@ -1,0 +1,18 @@
+<!-- home.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Log in with Spotify</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h1 class="text-2xl font-semibold mb-4">Log in with Spotify</h1>
+            <p class="mb-6">Connect your Spotify account to access your music statistics.</p>
+            <a href="{% url 'spotify:oauth-signin' %}" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-full inline-block">Log in with Spotify</a>
+        </div>
+    </div>
+</body>
+</html>
