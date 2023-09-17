@@ -1,33 +1,41 @@
-import base64
-
 import requests
-from decouple import config
-from django.http import JsonResponse
 
-SPOTIFY_CLIENT_ID = config("CLIENT_ID")
-SPOTIFY_CLIENT_SECRET = config("CLIENT_SECRET")
-SPOTIFY_REDIRECT_URI = config("REDIRECT_URI")
+from apps.accounts.models import CustomUser
+from apps.spotify.models import SpotifyToken
 
 
-def spotify_callback(request):
-    auth_code = request.GET.get("code")
+def get_spotify_user_data(access_token):
+    url = "https://api.spotify.com/v1/me"
+    headers = {"Authorization": f"Bearer {access_token}"}
 
-    token_url = "https://accounts.spotify.com/api/token"
-    headers = {
-        "Authorization": f'Basic {base64.encode(SPOTIFY_CLIENT_ID + ":" + SPOTIFY_CLIENT_SECRET)}',
-    }
-    data = {
-        "grant_type": "authorization_code",
-        "code": auth_code,
-        "redirect_uri": SPOTIFY_REDIRECT_URI,
-    }
-
-    response = requests.post(token_url, headers=headers, data=data)
+    response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
-        token_data = response.json()
-        access_token = token_data["access_token"]
-        # refresh_token = token_data["refresh_token"]
-        return JsonResponse({"access_token": access_token})
+        data = response.json()
+        return data
     else:
-        return JsonResponse({"error": "Failed to obtain access token"}, status=400)
+        print("Request failed with status code:", response.status_code)
+        print("Response content:", response.text)
+        return None
+
+
+def create_or_update_spotify_user(token_data):
+    user_data = get_spotify_user_data(token_data["access_token"])
+
+    user, _ = CustomUser.objects.get_or_create(
+        spotify_user_email=user_data["email"],
+        spotify_user_id=user_data["id"],
+    )
+
+    try:
+        spotify_token = user.spotifytoken
+    except SpotifyToken.DoesNotExist:
+        spotify_token = SpotifyToken(user=user)
+
+    spotify_token.access_token = token_data["access_token"]
+    spotify_token.refresh_token = token_data["refresh_token"]
+    spotify_token.token_type = token_data["token_type"]
+    spotify_token.expires_in = token_data["expires_in"]
+    spotify_token.save()
+
+    return user

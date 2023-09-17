@@ -9,8 +9,9 @@
 <body>
     <div class="min-h-screen flex items-center justify-center bg-gray-100">
         <div class="bg-white p-6 rounded-lg shadow-md">
-            <h1 class="text-2xl font-semibold">Authentication Successful</h1>
-            <p class="mt-2">You are now authenticated with Spotify.</p>
+            <h1 class="text-2xl font-semibold mb-4">Authentication Successful</h1>
+            <p class="mb-6">You are now authenticated with Spotify.</p>
+            <a href="{% url 'spotify:logout' %}" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-full inline-block">Log Out</a>
         </div>
     </div>
 </body>
