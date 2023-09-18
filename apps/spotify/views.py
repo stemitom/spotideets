@@ -63,7 +63,7 @@ class SpotifyOAuthCallbackView(View):
 def oauth_logout_view(request):
     logout(request)
     print("log-out")
-    return redirect("spotify:oauth")
+    return HttpResponseRedirect(reverse("spotify:oauth"))
 
 
 def oauth_success_view(request):

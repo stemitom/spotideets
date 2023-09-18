@@ -1,18 +1,23 @@
-<!-- home.html -->
+<!-- oauth_login.html -->
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Log in with Spotify</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotideets OAuth Login</title>
+    <!-- Include Tailwind CSS from CDN -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Add custom styles -->
+    <style>
+        /* Customize your styles here */
+    </style>
 </head>
-<body>
-    <div class="min-h-screen flex items-center justify-center bg-gray-100">
-        <div class="bg-white p-6 rounded-lg shadow-md">
-            <h1 class="text-2xl font-semibold mb-4">Log in with Spotify</h1>
-            <p class="mb-6">Connect your Spotify account to access your music statistics.</p>
-            <a href="{% url 'spotify:oauth' %}" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-full inline-block">Log in with Spotify</a>
-        </div>
+<body class="bg-gradient-to-b from-indigo-500 to-purple-500 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+        <h1 class="text-3xl font-semibold mb-4 text-center">Spotideets</h1>
+        <p class="mb-6 text-center text-gray-600">Authenticate with Spotify to access Spotideets.</p>
+        <a href="{% url 'spotify:oauth' %}" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full block text-center">Authenticate with Spotify</a>
     </div>
 </body>
 </html>
