@@ -1,9 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
+from decouple import config
 
 import requests
-from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.utils import timezone
 
 from apps.spotify.models import SpotifyToken
 
@@ -21,9 +22,12 @@ class SpotifyTokenMiddleware:
                 spotify_token = None
 
             if spotify_token and not spotify_token.access_token:
+                print("redirecting for auth")
                 return self.redirect_to_spotify_auth(request)
 
             if spotify_token and spotify_token.is_token_expired():
+                print(f"expires_at {spotify_token.expires_at}")
+                print(timezone.now())
                 refresh_success = self.refresh_spotify_token(user)
                 if not refresh_success:
                     return self.redirect_to_spotify_auth(request)
@@ -49,8 +53,8 @@ class SpotifyTokenMiddleware:
         data = {
             "grant_type": "refresh_token",
             "refresh_token": spotify_token.refresh_token,
-            "client_id": settings.SPOTIFY_CLIENT_ID,
-            "client_secret": settings.SPOTIFY_CLIENT_SECRET,
+            "client_id": config("SPOTIFY_CLIENT_ID"),
+            "client_secret": config("SPOTIFY_CLIENT_SECRET"),
         }
 
         response = requests.post("https://accounts.spotify.com/api/token", data=data)
@@ -58,7 +62,7 @@ class SpotifyTokenMiddleware:
         if response.status_code == 200:
             token_data = response.json()
             spotify_token.access_token = token_data["access_token"]
-            spotify_token.expires_at = datetime.now() + timedelta(
+            spotify_token.expires_at = timezone.now() + timedelta(
                 seconds=token_data["expires_in"]
             )
             spotify_token.save()

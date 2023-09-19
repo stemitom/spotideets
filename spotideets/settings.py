@@ -66,6 +66,7 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
+    "apps.accounts.backends.SpotifyAuthBackend",
 ]
 
 ROOT_URLCONF = "spotideets.urls"

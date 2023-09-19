@@ -2,14 +2,15 @@ import pprint
 
 import requests
 from decouple import config
-from django.contrib.auth import logout
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from rest_framework.views import APIView
 
-from apps.spotify.util import create_or_update_spotify_user
+from apps.spotify.util import (create_or_update_spotify_user,
+                               get_spotify_user_data)
 
 
 class SpotifyOauthView(APIView):
@@ -50,12 +51,19 @@ class SpotifyOAuthCallbackView(View):
 
         response = requests.post("https://accounts.spotify.com/api/token", data=data)
         token_data = response.json()
-        pprint.pprint(token_data["access_token"])
+        print(token_data["access_token"])
 
         if "access_token" not in token_data:
             return HttpResponseBadRequest("Access token not received")
 
-        create_or_update_spotify_user(token_data)
+        spotify_user = create_or_update_spotify_user(token_data)
+        authenticated_user = authenticate(
+            request,
+            spotify_user_email=spotify_user.spotify_user_email,
+            spotify_user_id=spotify_user.spotify_user_id,
+        )
+        login(request, authenticated_user)
+        print('logged in')
 
         return HttpResponseRedirect(reverse("spotify:success"))
 

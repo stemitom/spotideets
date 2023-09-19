@@ -13,6 +13,7 @@ def get_spotify_user_data(access_token):
 
     if response.status_code == 200:
         data = response.json()
+        print(data)
         return data
     else:
         print("Request failed with status code:", response.status_code)
