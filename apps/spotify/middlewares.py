@@ -22,7 +22,6 @@ class SpotifyTokenMiddleware:
                 spotify_token = None
 
             if spotify_token and not spotify_token.access_token:
-                print("redirecting for auth")
                 return self.redirect_to_spotify_auth(request)
 
             if spotify_token and spotify_token.is_token_expired():
