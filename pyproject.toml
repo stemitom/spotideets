@@ -19,6 +19,7 @@ spotipy = "^2.23.0"
 jupyter = "^1.0.0"
 requests = "^2.31.0"
 python-decouple = "^3.8"
+django-enumfields = "^2.1.1"
 
 [tool.poetry.dev-dependencies]
 ruff = "^0.0.282"

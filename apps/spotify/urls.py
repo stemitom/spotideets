@@ -12,7 +12,7 @@ app_name = "spotify"
 urlpatterns = [
     path(
         "oauth",
-        SpotifyOauthView.as_view(),
+        SpotifyOAuthView.as_view(),
         name="oauth",
     ),
     path(

@@ -653,6 +653,17 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-enumfields"
+version = "2.1.1"
+description = "Real Python Enums for Django."
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-enumfields-2.1.1.tar.gz", hash = "sha256:f64841732a9c343f5071220e0abcf5f51c9472c06e3c33d7c6a7ec27b6087561"},
+    {file = "django_enumfields-2.1.1-py3-none-any.whl", hash = "sha256:d32f2151801a5fc13c860276ee99495c2c9345e0a4281d0104276c39ddb22807"},
+]
+
+[[package]]
 name = "django-environ"
 version = "0.11.2"
 description = "A package that allows you to utilize 12factor inspired environment variables to configure your Django application."
@@ -3226,4 +3237,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "004e50342d5f83e3d10ac3814087a01d394704f7b66c77b569a3323a2866bcee"
+content-hash = "a196a9e674fd94c7224456f414218ce9488d3b96cd1f4597058ac6cee0ae2ccd"
