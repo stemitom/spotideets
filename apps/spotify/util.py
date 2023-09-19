@@ -15,8 +15,6 @@ def get_spotify_user_data(access_token):
         data = response.json()
         return data
     else:
-        print("Request failed with status code:", response.status_code)
-        print("Response content:", response.text)
         return None
 
 
