@@ -1,4 +1,5 @@
 import pprint
+
 import requests
 from decouple import config
 from django.contrib.auth import logout
@@ -49,20 +50,18 @@ class SpotifyOAuthCallbackView(View):
 
         response = requests.post("https://accounts.spotify.com/api/token", data=data)
         token_data = response.json()
-        pprint.pprint(token_data)
+        pprint.pprint(token_data["access_token"])
 
         if "access_token" not in token_data:
             return HttpResponseBadRequest("Access token not received")
 
-        user = create_or_update_spotify_user(token_data)
-        pprint.pprint(user)
+        create_or_update_spotify_user(token_data)
 
         return HttpResponseRedirect(reverse("spotify:success"))
 
 
 def oauth_logout_view(request):
     logout(request)
-    print("log-out")
     return HttpResponseRedirect(reverse("spotify:oauth"))
 
 

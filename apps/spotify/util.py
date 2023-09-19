@@ -1,4 +1,5 @@
 import requests
+from django.utils import timezone
 
 from apps.accounts.models import CustomUser
 from apps.spotify.models import SpotifyToken
@@ -36,6 +37,8 @@ def create_or_update_spotify_user(token_data):
     spotify_token.refresh_token = token_data["refresh_token"]
     spotify_token.token_type = token_data["token_type"]
     spotify_token.expires_in = token_data["expires_in"]
+    if not spotify_token.created_at:
+        spotify_token.created_at = timezone.now()
     spotify_token.save()
 
     return user

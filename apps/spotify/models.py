@@ -1,7 +1,6 @@
-from datetime import timezone
-
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 
 class SpotifyToken(models.Model):
@@ -11,8 +10,13 @@ class SpotifyToken(models.Model):
     token_type = models.CharField(max_length=100)
     expires_in = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
 
     def is_token_expired(self):
-        return timezone.now() > (
-            self.created_at + timezone.timedelta(seconds=self.expires_in)
+        return timezone.now() > self.expires_at
+
+    def save(self, *args, **kwargs):
+        self.expires_at = self.created_at + timezone.timedelta(
+            seconds=self.expires_in,
         )
+        super().save(*args, **kwargs)

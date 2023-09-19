@@ -1,9 +1,11 @@
-import requests
 from datetime import datetime, timedelta
+
+import requests
 from django.conf import settings
-from apps.spotify.models import SpotifyToken
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+
+from apps.spotify.models import SpotifyToken
 
 
 class SpotifyTokenMiddleware:
@@ -21,7 +23,7 @@ class SpotifyTokenMiddleware:
             if spotify_token and not spotify_token.access_token:
                 return self.redirect_to_spotify_auth(request)
 
-            if spotify_token and spotify_token.expires_at < datetime.now():
+            if spotify_token and spotify_token.is_token_expired():
                 refresh_success = self.refresh_spotify_token(user)
                 if not refresh_success:
                     return self.redirect_to_spotify_auth(request)
