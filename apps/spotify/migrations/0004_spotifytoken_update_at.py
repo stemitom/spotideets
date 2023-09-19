@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('spotify', '0003_spotifytoken_expires_at'),
+        ("spotify", "0003_spotifytoken_expires_at"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='spotifytoken',
-            name='update_at',
+            model_name="spotifytoken",
+            name="update_at",
             field=models.DateTimeField(auto_now=True),
         ),
     ]

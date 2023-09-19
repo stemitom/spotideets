@@ -1,7 +1,7 @@
 from datetime import timedelta
-from decouple import config
 
 import requests
+from decouple import config
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
@@ -26,8 +26,6 @@ class SpotifyTokenMiddleware:
                 return self.redirect_to_spotify_auth(request)
 
             if spotify_token and spotify_token.is_token_expired():
-                print(f"expires_at {spotify_token.expires_at}")
-                print(timezone.now())
                 refresh_success = self.refresh_spotify_token(user)
                 if not refresh_success:
                     return self.redirect_to_spotify_auth(request)

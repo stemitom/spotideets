@@ -7,7 +7,7 @@ urlpatterns = [
     path(
         "",
         oauth_index_view,
-        name="spotify-oauth",
+        name="index",
     ),
     path(
         "admin/",

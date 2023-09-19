@@ -1,7 +1,11 @@
 from django.urls import path
 
-from .views import (SpotifyOAuthCallbackView, SpotifyOauthView,
-                    oauth_logout_view, oauth_success_view)
+from .views import (
+    SpotifyOAuthCallbackView,
+    SpotifyOauthView,
+    oauth_logout_view,
+    oauth_success_view,
+)
 
 app_name = "spotify"
 
@@ -22,8 +26,8 @@ urlpatterns = [
         name="success",
     ),
     path(
-        "logout",
+        "signout",
         oauth_logout_view,
-        name="logout",
+        name="signout",
     ),
 ]
