@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from apps.spotify.views import oauth_index_view
+from apps.spotify.views.auth import oauth_index_view
 
 urlpatterns = [
     path(

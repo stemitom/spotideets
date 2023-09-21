@@ -1,11 +1,12 @@
 from django.urls import path
 
-from .views import (
+from .views.auth import (
     SpotifyOAuthCallbackView,
-    SpotifyOauthView,
+    SpotifyOAuthView,
     oauth_logout_view,
     oauth_success_view,
 )
+from .views.tracks import TopTracksView
 
 app_name = "spotify"
 
@@ -29,5 +30,10 @@ urlpatterns = [
         "signout",
         oauth_logout_view,
         name="signout",
+    ),
+    path(
+        "top/tracks",
+        TopTracksView.as_view(),
+        name="top_track",
     ),
 ]

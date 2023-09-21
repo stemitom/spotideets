@@ -1,0 +1,30 @@
+<!-- top_tracks.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Tracks</title>
+    <!-- Include Tailwind CSS from CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Add custom styles -->
+    <style>
+        /* Customize your styles here */
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto py-8">
+        <h1 class="text-3xl font-semibold mb-4">Top Tracks</h1>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for track in tracks %}
+            <div class="bg-white rounded-lg shadow-lg p-4">
+                <img src="{{ track.img_url }}" alt="{{ track.name }}" class="w-full h-48 object-cover mb-4">
+                <h2 class="text-lg font-semibold">{{ track.name }}</h2>
+                <p class="text-gray-600">{{ track.artist_names }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
