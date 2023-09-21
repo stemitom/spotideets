@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 
-from apps.spotify.models import Artist, Genre, TimeFrame, TopTracks, Track
+from apps.spotify.models import Artist, TopTracks, Track
 from apps.spotify.serializers import TrackSerializer
 from apps.spotify.views.base import SpotifyAPIView
 
