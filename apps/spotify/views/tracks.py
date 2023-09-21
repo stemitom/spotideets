@@ -2,12 +2,12 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Max
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
-
 from rest_framework.response import Response
 
-from apps.spotify.models import Artist, Track, Genre, TimeFrame, TopTracks
+from apps.spotify.models import Artist, Genre, TimeFrame, TopTracks, Track
 from apps.spotify.serializers import TrackSerializer
 from apps.spotify.views.base import SpotifyAPIView
+
 
 @method_decorator(login_required, name="dispatch")
 class TopTracksView(SpotifyAPIView):
@@ -17,7 +17,7 @@ class TopTracksView(SpotifyAPIView):
         top_tracks_data = response.json().get("items", [])
         tracks = []
 
-        for order, track_data in enumerate(top_tracks_data):
+        for _, track_data in enumerate(top_tracks_data):
             track, _ = Track.objects.get_or_create(
                 song_id=track_data["id"],
                 defaults={

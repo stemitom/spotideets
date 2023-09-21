@@ -2,12 +2,12 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Max
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
-
 from rest_framework.response import Response
 
 from apps.spotify.models import Artist, Genre, TimeFrame, TopArtists
 from apps.spotify.serializers import ArtistSerializer
 from apps.spotify.views.base import SpotifyAPIView
+
 
 @method_decorator(login_required, name="dispatch")
 class TopArtistsView(SpotifyAPIView):
