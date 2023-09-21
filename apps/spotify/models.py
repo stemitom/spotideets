@@ -38,6 +38,8 @@ class Genre(models.Model):
 class Artist(models.Model):
     spotify_id = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
+    popularity = models.PositiveIntegerField(default=0)
+    genres = models.ManyToManyField(Genre)
     top_tracks = models.ManyToManyField("Track", related_name="top_artists")
     top_albums = models.ManyToManyField("Album", related_name="top_artists")
     top_listeners = models.ManyToManyField(User, related_name="top_artists")
