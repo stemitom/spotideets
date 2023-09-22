@@ -9,13 +9,15 @@ def get_spotify_user_data(access_token):
     url = "https://api.spotify.com/v1/me"
     headers = {"Authorization": f"Bearer {access_token}"}
 
-    response = requests.get(url, headers=headers)
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+    except TimeoutError:
+        return ""
 
     if response.status_code == 200:
         data = response.json()
         return data
-    else:
-        return None
+    return None
 
 
 def create_or_update_spotify_user(token_data):
@@ -35,6 +37,7 @@ def create_or_update_spotify_user(token_data):
     spotify_token.refresh_token = token_data["refresh_token"]
     spotify_token.token_type = token_data["token_type"]
     spotify_token.expires_in = token_data["expires_in"]
+
     if not spotify_token.created_at:
         spotify_token.created_at = timezone.now()
     spotify_token.save()

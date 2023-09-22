@@ -2,8 +2,7 @@ from django.urls import path
 
 from apps.spotify.views.artists import TopArtistsView
 
-from .views.auth import (SpotifyOAuthCallbackView, SpotifyOAuthView,
-                         oauth_logout_view, oauth_success_view)
+from .views.auth import SpotifyOAuthCallbackView, SpotifyOAuthView, oauth_logout_view, oauth_success_view
 from .views.tracks import TopTracksView
 
 app_name = "spotify"

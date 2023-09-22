@@ -63,5 +63,4 @@ class TopTracksView(SpotifyAPIView):
         if self.request.accepted_renderer.format == "html":
             context = {"tracks": serializer.data}
             return render(self.request, "top_tracks.html", context)
-        else:
-            return Response(serializer.data)
+        return Response(serializer.data)

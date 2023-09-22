@@ -5,6 +5,7 @@ from decouple import config
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
+from requests.exceptions import Timeout
 
 from apps.spotify.models import SpotifyToken
 
@@ -54,14 +55,15 @@ class SpotifyTokenMiddleware:
             "client_secret": config("SPOTIFY_CLIENT_SECRET"),
         }
 
-        response = requests.post("https://accounts.spotify.com/api/token", data=data)
+        try:
+            response = requests.post("https://accounts.spotify.com/api/token", data=data, timeout=5)
+        except Timeout:
+            return False
 
         if response.status_code == 200:
             token_data = response.json()
             spotify_token.access_token = token_data["access_token"]
-            spotify_token.expires_at = timezone.now() + timedelta(
-                seconds=token_data["expires_in"]
-            )
+            spotify_token.expires_at = timezone.now() + timedelta(seconds=token_data["expires_in"])
             spotify_token.save()
             return True
 

@@ -25,9 +25,7 @@ if DEBUG:
 
 SECRET_KEY = env.str("SECRET_KEY")
 
-ALLOWED_HOSTS = (
-    env.list("ALLOWED_HOSTS", default=[]) if DEBUG else env.list("ALLOWED_HOSTS")
-)
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[]) if DEBUG else env.list("ALLOWED_HOSTS")
 
 
 # Application definition

@@ -80,9 +80,7 @@ class UserFavorite(models.Model):
 
 
 class Follower(models.Model):
-    artist = models.ForeignKey(
-        Artist, on_delete=models.CASCADE, related_name="followers"
-    )
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE, related_name="followers")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
 
     def __str__(self):

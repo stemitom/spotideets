@@ -20,6 +20,7 @@ jupyter = "^1.0.0"
 requests = "^2.31.0"
 python-decouple = "^3.8"
 django-enumfields = "^2.1.1"
+pre-commit = "^3.4.0"
 
 [tool.poetry.dev-dependencies]
 ruff = "^0.0.282"
@@ -39,6 +40,30 @@ pylint-django = "^2.5.3"
 pyinstrument = "^4.5.1"
 ipython = "^8.14.0"
 
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.0.4"
+pylint = "^2.17.1"
+pylint-django = "^2.5.3"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "django"
+combine_as_imports = true
+include_trailing_comma = true
+line_length = 120
+multi_line_output = 3
+
+[tool.black]
+line-length = 120
+target-version = ['py310']
+include = '\.pyi?$'
+
+[tool.djlint]
+profile="django"
+ignore = "H031"
+
+[tool.ruff]
+line-length = 120
