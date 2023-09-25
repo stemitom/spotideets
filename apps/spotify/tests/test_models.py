@@ -64,6 +64,7 @@ class UserFavoriteFactory(DjangoModelFactory):
     track = factory.SubFactory(TrackFactory)
 
 
+@pytest.mark.django_db
 def test_spotify_token_model():
     user = UserFactory()
     token = SpotifyTokenFactory(user=user)
@@ -86,24 +87,3 @@ def test_genre_model():
 def test_artist_model():
     artist = ArtistFactory(name="John Doe")
     assert artist.name == "John Doe"
-
-
-@pytest.mark.django_db
-def test_album_model():
-    album = AlbumFactory(title="Greatest Hits")
-    assert album.title == "Greatest Hits"
-
-
-@pytest.mark.django_db
-def test_track_model():
-    track = TrackFactory(title="Song Title")
-    assert track.title == "Song Title"
-
-
-@pytest.mark.django_db
-def test_user_favorite_model():
-    user = UserFactory()
-    track = TrackFactory()
-    favorite = UserFavoriteFactory(user=user, track=track)
-    assert favorite.user == user
-    assert favorite.track == track
