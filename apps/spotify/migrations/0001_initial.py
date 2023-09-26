@@ -49,15 +49,11 @@ class Migration(migrations.Migration):
                 ("name", models.CharField(max_length=255)),
                 (
                     "top_albums",
-                    models.ManyToManyField(
-                        related_name="top_artists", to="spotify.Album"
-                    ),
+                    models.ManyToManyField(related_name="top_artists", to="spotify.Album"),
                 ),
                 (
                     "top_listeners",
-                    models.ManyToManyField(
-                        related_name="top_artists", to=settings.AUTH_USER_MODEL
-                    ),
+                    models.ManyToManyField(related_name="top_artists", to=settings.AUTH_USER_MODEL),
                 ),
             ],
         ),
@@ -119,21 +115,15 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "favorite_artists",
-                    models.ManyToManyField(
-                        related_name="favorited_by", to="spotify.Artist"
-                    ),
+                    models.ManyToManyField(related_name="favorited_by", to="spotify.Artist"),
                 ),
                 (
                     "favorite_genres",
-                    models.ManyToManyField(
-                        related_name="favorited_by", to="spotify.Genre"
-                    ),
+                    models.ManyToManyField(related_name="favorited_by", to="spotify.Genre"),
                 ),
                 (
                     "favorite_tracks",
-                    models.ManyToManyField(
-                        related_name="favorited_by", to="spotify.Track"
-                    ),
+                    models.ManyToManyField(related_name="favorited_by", to="spotify.Track"),
                 ),
                 (
                     "user",
@@ -158,15 +148,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "time_frame",
-                    enumfields.fields.EnumField(
-                        enum=apps.spotify.models.TimeFrame, max_length=50
-                    ),
+                    enumfields.fields.EnumField(enum=apps.spotify.models.TimeFrame, max_length=50),
                 ),
                 (
                     "track",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="spotify.track"
-                    ),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="spotify.track"),
                 ),
                 (
                     "user",
@@ -191,15 +177,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "time_frame",
-                    enumfields.fields.EnumField(
-                        enum=apps.spotify.models.TimeFrame, max_length=50
-                    ),
+                    enumfields.fields.EnumField(enum=apps.spotify.models.TimeFrame, max_length=50),
                 ),
                 (
                     "genre",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="spotify.genre"
-                    ),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="spotify.genre"),
                 ),
                 (
                     "user",
@@ -224,15 +206,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "time_frame",
-                    enumfields.fields.EnumField(
-                        enum=apps.spotify.models.TimeFrame, max_length=50
-                    ),
+                    enumfields.fields.EnumField(enum=apps.spotify.models.TimeFrame, max_length=50),
                 ),
                 (
                     "artist",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="spotify.artist"
-                    ),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="spotify.artist"),
                 ),
                 (
                     "user",
@@ -304,8 +282,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="artist",
             name="top_tracks",
-            field=models.ManyToManyField(
-                related_name="top_artists", to="spotify.Track"
-            ),
+            field=models.ManyToManyField(related_name="top_artists", to="spotify.Track"),
         ),
     ]
