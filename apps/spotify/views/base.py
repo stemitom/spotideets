@@ -14,8 +14,8 @@ class SpotifyAPIView(APIView):
 
         time_frame = request.GET.get("time_frame", "medium_term")
         time_frame_map = {
-            "4 weeks": TimeFrame.SHORT_TERM,
-            "6 months": TimeFrame.MEDIUM_TERM,
+            "weeks": TimeFrame.SHORT_TERM,
+            "months": TimeFrame.MEDIUM_TERM,
             "lifetime": TimeFrame.LONG_TERM,
         }
         time_frame = time_frame_map.get(time_frame, TimeFrame.MEDIUM_TERM)

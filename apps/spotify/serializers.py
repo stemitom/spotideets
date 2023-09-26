@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.spotify.models import Artist, Track
+from apps.spotify.models import Artist, Genre, Track
 
 
 class TrackSerializer(serializers.ModelSerializer):
@@ -20,3 +20,9 @@ class ArtistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
         fields = ["spotify_id", "name", "genres"]
+
+
+class GenreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Genre
+        fields = "__all__"

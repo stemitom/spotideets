@@ -3,7 +3,7 @@ from django.urls import path
 from apps.spotify.views.artists import TopArtistsView
 
 from .views.auth import SpotifyOAuthCallbackView, SpotifyOAuthView, oauth_logout_view, oauth_success_view
-from .views.tracks import TopTracksView
+from .views.tracks import RecentlyPlayedView, TopTracksView
 
 app_name = "spotify"
 
@@ -37,5 +37,10 @@ urlpatterns = [
         "top/artists",
         TopArtistsView.as_view(),
         name="top_artists",
+    ),
+    path(
+        "recent",
+        RecentlyPlayedView.as_view(),
+        name="recently_played",
     ),
 ]

@@ -1,11 +1,12 @@
+from collections import Counter
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max
-from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 
 from apps.spotify.models import Artist, Genre, TopArtists
-from apps.spotify.serializers import ArtistSerializer
+from apps.spotify.serializers import ArtistSerializer, GenreSerializer
 from apps.spotify.views.base import SpotifyAPIView
 
 
@@ -16,6 +17,8 @@ class TopArtistsView(SpotifyAPIView):
     def handle_response(self, response, time_frame):
         top_artists_data = response.json().get("items", [])
         artists = []
+
+        genre_counter = Counter()
 
         for _, artist_data in enumerate(top_artists_data):
             artist, _ = Artist.objects.get_or_create(
@@ -28,10 +31,13 @@ class TopArtistsView(SpotifyAPIView):
             for genre_name in artist_data["genres"]:
                 genre, _ = Genre.objects.get_or_create(name=genre_name)
                 artist.genres.add(genre)
+                genre_counter[genre_name] += 1
 
             artists.append(artist)
 
         Artist.objects.bulk_create(artists, ignore_conflicts=True)
+
+        top_genres = [Genre.objects.get_or_create(name=genre_name)[0] for genre_name in genre_counter.keys()]
 
         max_order = (
             TopArtists.objects.filter(user=self.request.user)
@@ -53,9 +59,11 @@ class TopArtistsView(SpotifyAPIView):
 
         TopArtists.objects.bulk_create(top_artists)
 
-        serializer = ArtistSerializer(artists, many=True)
-        if self.request.accepted_renderer.format == "html":
-            context = {"artists": serializer.data}
-            return render(self.request, "top_artists.html", context)
-        else:
-            return Response(serializer.data)
+        artist_serializer = ArtistSerializer(artists, many=True)
+        genre_serializer = GenreSerializer(top_genres, many=True)
+        return Response(
+            {
+                "artist": artist_serializer.data,
+                "top_genres": genre_serializer.data,
+            }
+        )
