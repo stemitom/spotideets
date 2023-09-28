@@ -36,7 +36,7 @@ class Genre(models.Model):
 
 
 class Artist(models.Model):
-    spotify_id = models.CharField(max_length=255)
+    artist_id = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     popularity = models.PositiveIntegerField(default=0)
     genres = models.ManyToManyField(Genre)

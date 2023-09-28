@@ -27,7 +27,7 @@ class TopTracksView(SpotifyAPIView):
 
             for artist_data in track_data["artists"]:
                 artist, _ = Artist.objects.get_or_create(
-                    spotify_id=artist_data["id"],
+                    artist_id=artist_data["id"],
                     defaults={
                         "name": artist_data["name"],
                     },
@@ -81,7 +81,7 @@ class RecentlyPlayedView(SpotifyAPIView):
 
             for artist_data in track_data["track"]["artists"]:
                 artist, _ = Artist.objects.get_or_create(
-                    spotify_id=artist_data["id"],
+                    artist_id=artist_data["id"],
                     defaults={
                         "name": artist_data["name"],
                     },
