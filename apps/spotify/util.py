@@ -20,6 +20,15 @@ def get_spotify_user_data(access_token):
     return None
 
 
+def get_artist_genres(artist_id, access_token):
+    url = f"https://api.spotify.com/v1/artists/{artist_id}"
+    headers = {"Authorization": f"Bearer {access_token}"}
+    response = requests.get(url, headers=headers)
+    data = response.json()
+    genres = data.get("genres", [])
+    return genres
+
+
 def create_or_update_spotify_user(token_data):
     user_data = get_spotify_user_data(token_data["access_token"])
 

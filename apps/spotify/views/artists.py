@@ -1,7 +1,6 @@
 from collections import Counter
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Max
 from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 
@@ -21,43 +20,43 @@ class TopArtistsView(SpotifyAPIView):
         genre_counter = Counter()
 
         for _, artist_data in enumerate(top_artists_data):
-            artist, _ = Artist.objects.get_or_create(
-                spotify_id=artist_data["id"],
+            artist, _ = Artist.objects.update_or_create(
+                artist_id=artist_data["id"],
                 defaults={
                     "name": artist_data["name"],
                 },
             )
 
-            for genre_name in artist_data["genres"]:
-                genre, _ = Genre.objects.get_or_create(name=genre_name)
-                artist.genres.add(genre)
-                genre_counter[genre_name] += 1
-
+            genres = [Genre.objects.get_or_create(name=genre_name)[0] for genre_name in artist_data["genres"]]
+            artist.genres.set(genres)
+            genre_counter.update(genres)
             artists.append(artist)
 
         Artist.objects.bulk_create(artists, ignore_conflicts=True)
 
-        top_genres = [Genre.objects.get_or_create(name=genre_name)[0] for genre_name in genre_counter.keys()]
-
-        max_order = (
-            TopArtists.objects.filter(user=self.request.user)
-            .filter(time_frame=time_frame)
-            .aggregate(max_order=Max("order"))
-            .get("max_order")
-            or 0
-        )
+        genre_ids = Genre.objects.filter(name__in=genre_counter.keys()).values_list("id", flat=True)
+        top_genres = [
+            Genre.objects.get_or_create(id=genre_id, name=genre_name)[0]
+            for genre_id, genre_name in zip(genre_ids, genre_counter.keys())
+        ]
 
         top_artists = [
             TopArtists(
                 user=self.request.user,
                 artist=artist,
                 time_frame=time_frame,
-                order=max_order + order + 1,
             )
-            for order, artist in enumerate(artists)
+            for artist in artists
         ]
 
-        TopArtists.objects.bulk_create(top_artists)
+        TopArtists.objects.filter(user=self.request.user, time_frame=time_frame).update(artist=None)
+        for top_artist in top_artists:
+            top_artist.save()
+
+        for artist, top_artist in zip(artists, top_artists):
+            top_artist.artist = artist
+
+        TopArtists.objects.bulk_update(top_artists, ["artist"])
 
         artist_serializer = ArtistSerializer(artists, many=True)
         genre_serializer = GenreSerializer(top_genres, many=True)

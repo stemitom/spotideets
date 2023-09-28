@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import Max
 from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 
@@ -37,23 +36,15 @@ class TopTracksView(SpotifyAPIView):
             tracks.append(track)
 
         Track.objects.bulk_create(tracks, ignore_conflicts=True)
-
-        max_order = (
-            TopTracks.objects.filter(user=self.request.user)
-            .filter(time_frame=time_frame)
-            .aggregate(max_order=Max("order"))
-            .get("max_order")
-            or 0
-        )
+        TopTracks.objects.filter(user=self.request.user, time_frame=time_frame).delete()
 
         top_tracks = [
             TopTracks(
                 user=self.request.user,
                 track=track,
                 time_frame=time_frame,
-                order=max_order + order + 1,
             )
-            for order, track in enumerate(tracks)
+            for track in tracks
         ]
 
         TopTracks.objects.bulk_create(top_tracks)
@@ -71,7 +62,7 @@ class RecentlyPlayedView(SpotifyAPIView):
         tracks = []
 
         for _, track_data in enumerate(recently_played_data):
-            track, _ = Track.objects.get_or_create(
+            track, _ = Track.objects.update_or_create(
                 song_id=track_data["track"]["id"],
                 defaults={
                     "name": track_data["track"]["name"],
@@ -80,7 +71,7 @@ class RecentlyPlayedView(SpotifyAPIView):
             )
 
             for artist_data in track_data["track"]["artists"]:
-                artist, _ = Artist.objects.get_or_create(
+                artist, _ = Artist.objects.update_or_create(
                     artist_id=artist_data["id"],
                     defaults={
                         "name": artist_data["name"],
@@ -89,6 +80,8 @@ class RecentlyPlayedView(SpotifyAPIView):
                 track.artists.add(artist)
 
             tracks.append(track)
+
+        Track.objects.bulk_create(tracks, ignore_conflicts=True)
 
         serializer = TrackSerializer(tracks, many=True)
         return Response(serializer.data)
