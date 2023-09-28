@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from apps.spotify.models import Artist, TopTracks, Track
-from apps.spotify.serializers import TopTracksSerializer, TrackSerializer
+from apps.spotify.serializers import TopTracksSerializer
 from apps.spotify.views.base import SpotifyAPIView
 from commons.enums import IndicatorEnum
 
@@ -17,12 +17,16 @@ class TopTracksView(SpotifyAPIView):
         top_tracks_data = response.json().get("items", [])
         tracks = []
 
-        for _, track_data in enumerate(top_tracks_data):
+        for track_data in top_tracks_data:
             track, _ = Track.objects.get_or_create(
                 song_id=track_data["id"],
                 defaults={
                     "name": track_data["name"],
                     "img_url": track_data["album"]["images"][0]["url"],
+                    "duration_ms": track_data["duration_ms"],
+                    "explicit": track_data["explicit"],
+                    "spotify_popularity": track_data["popularity"],
+                    "spotify_preview": track_data["preview_url"],
                 },
             )
 
@@ -38,21 +42,25 @@ class TopTracksView(SpotifyAPIView):
             tracks.append(track)
 
         Track.objects.bulk_create(tracks, ignore_conflicts=True)
-        TopTracks.objects.filter(user=self.request.user, time_frame=time_frame).delete()
+
+        TopTracks.objects.filter(user=self.request.user, timeframe=time_frame).delete()
 
         top_tracks = [
             TopTracks(
                 user=self.request.user,
                 track=track,
-                time_frame=time_frame,
+                timeframe=time_frame,
+                indicator=IndicatorEnum.UP,
             )
             for track in tracks
         ]
 
         TopTracks.objects.bulk_create(top_tracks)
 
-        serializer = TrackSerializer(tracks, many=True)
-        return Response(serializer.data)
+        serializer = TopTracksSerializer(top_tracks, many=True)
+        print(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        # return Response({"data": "ok"})
 
 
 @method_decorator(login_required, name="dispatch")

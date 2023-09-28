@@ -1,3 +1,4 @@
+from enumfields.drf import EnumSupportSerializerMixin
 from rest_framework import serializers
 
 from apps.spotify.models import Album, Artist, Genre, TopTracks, Track
@@ -33,7 +34,7 @@ class TrackSerializer(serializers.ModelSerializer):
         ]
 
 
-class TopTracksSerializer(serializers.ModelSerializer):
+class TopTracksSerializer(EnumSupportSerializerMixin, serializers.ModelSerializer):
     track = TrackSerializer()
 
     class Meta:

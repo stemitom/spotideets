@@ -80,6 +80,7 @@ class Track(TimeAndUUIDStampedBaseModel):
 
 
 class TopTracks(TopCharacteristics):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     track = models.OneToOneField(Track, on_delete=models.CASCADE)
 
 

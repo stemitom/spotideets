@@ -58,7 +58,7 @@ class SoftDeleteBaseModel(models.Model):
 class TopCharacteristics(models.Model):
     position = models.IntegerField(default=1)
     streams = models.PositiveIntegerField(default=1)
-    indicator = EnumField(IndicatorEnum, max_length=20)
+    indicator = EnumField(IndicatorEnum, max_length=20, default=IndicatorEnum.SAME)
     timeframe = EnumField(TimeFrame, max_length=20)
 
     class Meta:
