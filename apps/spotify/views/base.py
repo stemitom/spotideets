@@ -2,7 +2,7 @@ import requests
 from requests import Response
 from rest_framework.views import APIView
 
-from apps.spotify.models import TimeFrame
+from commons.enums import TimeFrame
 
 
 class SpotifyAPIView(APIView):

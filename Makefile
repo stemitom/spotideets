@@ -19,5 +19,14 @@ runserver:
 	@echo 'Running spotideets development server...'
 	python -X dev manage.py runserver
 
+resetdbmigrations:
+	@echo 'Deleting database and flushing migrations'
+	find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+	find . -path "*/migrations/*.pyc"  -delete
+	dropdb spotideets
+	createdb spotideets
+	python manage.py makemigrations
+	python manage.py migrate
+
 %:
 	@:

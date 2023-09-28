@@ -2,6 +2,9 @@ import uuid
 
 from django.db import models
 from django.utils import timezone
+from enumfields import EnumField
+
+from commons.enums import IndicatorEnum, TimeFrame
 
 from .managers import SoftDeletionManager
 
@@ -50,3 +53,13 @@ class SoftDeleteBaseModel(models.Model):
     def restore(self):
         self.deleted_at = None
         self.save()
+
+
+class TopCharacteristics(models.Model):
+    position = models.IntegerField(default=1)
+    streams = models.PositiveIntegerField(default=1)
+    indicator = EnumField(IndicatorEnum, max_length=20)
+    timeframe = EnumField(TimeFrame, max_length=20)
+
+    class Meta:
+        abstract = True

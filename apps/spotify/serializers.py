@@ -1,28 +1,41 @@
 from rest_framework import serializers
 
-from apps.spotify.models import Artist, Genre, Track
-
-
-class TrackSerializer(serializers.ModelSerializer):
-    artist_names = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Track
-        fields = ["song_id", "artist_names", "name", "img_url"]
-
-    def get_artist_names(self, obj):
-        return ", ".join([artist.name for artist in obj.artists.all()])
+from apps.spotify.models import Album, Artist, TopTracks, Track
 
 
 class ArtistSerializer(serializers.ModelSerializer):
-    genres = serializers.StringRelatedField(many=True)
-
     class Meta:
         model = Artist
-        fields = ["artist_id", "name", "genres"]
+        fields = ["id", "name"]
 
 
-class GenreSerializer(serializers.ModelSerializer):
+class AlbumSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Genre
-        fields = "__all__"
+        model = Album
+        fields = ["id", "name", "image"]
+
+
+class TrackSerializer(serializers.ModelSerializer):
+    artists = ArtistSerializer(many=True)
+    albums = AlbumSerializer(many=True)
+
+    class Meta:
+        model = Track
+        fields = [
+            "id",
+            "name",
+            "artists",
+            "albums",
+            "duration_ms",
+            "explicit",
+            "spotify_popularity",
+            "spotify_preview",
+        ]
+
+
+class TopTracksSerializer(serializers.ModelSerializer):
+    track = TrackSerializer()
+
+    class Meta:
+        model = TopTracks
+        fields = ["position", "streams", "indicator", "track"]

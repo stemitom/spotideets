@@ -1,9 +1,8 @@
-from enum import Enum
-
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
-from enumfields import EnumField
+
+from commons.models import TimeAndUUIDStampedBaseModel, TopCharacteristics
 
 User = get_user_model()
 
@@ -38,45 +37,50 @@ class Genre(models.Model):
 class Artist(models.Model):
     artist_id = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    popularity = models.PositiveIntegerField(default=0)
+    spotify_popularity = models.PositiveIntegerField(default=0)
     genres = models.ManyToManyField(Genre)
-    top_tracks = models.ManyToManyField("Track", related_name="top_artists")
-    top_albums = models.ManyToManyField("Album", related_name="top_artists")
-    top_listeners = models.ManyToManyField(User, related_name="top_artists")
+    followers_count = models.IntegerField(default=0)
+    image_url = models.URLField()
 
     def __str__(self):
         return self.name
+
+
+class TopArtists(Artist, TopCharacteristics):
+    pass
 
 
 class Album(models.Model):
     album_id = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    release_date = models.DateField()
+    image = models.URLField()
+    release_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return self.name
 
 
-class Track(models.Model):
+class TopAlbums(Album, TopCharacteristics):
+    pass
+
+
+class Track(TimeAndUUIDStampedBaseModel):
     song_id = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     img_url = models.URLField()
-    genres = models.ManyToManyField(Genre, related_name="tracks")
     artists = models.ManyToManyField(Artist, related_name="tracks")
     albums = models.ManyToManyField(Album, related_name="tracks")
+    duration_ms = models.PositiveBigIntegerField(default=0)
+    spotify_popularity = models.IntegerField(default=0)
+    spotify_preview = models.URLField()
+    explicit = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
 
 
-class UserFavorite(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    favorite_tracks = models.ManyToManyField(Track, related_name="favorited_by")
-    favorite_artists = models.ManyToManyField(Artist, related_name="favorited_by")
-    favorite_genres = models.ManyToManyField(Genre, related_name="favorited_by")
-
-    def __str__(self):
-        return self.user.username
+class TopTracks(TopCharacteristics):
+    track = models.OneToOneField(Track, on_delete=models.CASCADE)
 
 
 class Follower(models.Model):
@@ -85,39 +89,3 @@ class Follower(models.Model):
 
     def __str__(self):
         return f"{self.user.username} follows {self.artist.name}"
-
-
-class TimeFrame(Enum):
-    LONG_TERM = "long_term"
-    MEDIUM_TERM = "medium_term"
-    SHORT_TERM = "short_term"
-
-
-class TopTracks(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    track = models.ForeignKey(Track, on_delete=models.CASCADE)
-    time_frame = EnumField(TimeFrame, max_length=50)
-    order = models.IntegerField(default=1)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.track.name} ({self.time_frame})"
-
-
-class TopGenres(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
-    time_frame = EnumField(TimeFrame, max_length=50)
-    order = models.IntegerField(default=1)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.genre.name} ({self.time_frame})"
-
-
-class TopArtists(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
-    time_frame = EnumField(TimeFrame, max_length=50)
-    order = models.IntegerField(default=1)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.artist.name} ({self.time_frame})"
