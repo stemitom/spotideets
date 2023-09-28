@@ -3,8 +3,15 @@ from django.db import models
 
 
 class CustomUser(AbstractUser):
+    username = models.CharField(max_length=255)
     spotify_user_email = models.EmailField(unique=True)
     spotify_user_id = models.CharField(max_length=255, unique=True)
+    bio = models.TextField(
+        max_length=255,
+        blank=True,
+        null=True,
+        default="Hey, I'm using spotideets",
+    )
 
     def __str__(self) -> str:
         return f"{self.spotify_user_id}"
