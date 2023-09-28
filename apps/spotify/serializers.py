@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.spotify.models import Album, Artist, TopTracks, Track
+from apps.spotify.models import Album, Artist, Genre, TopTracks, Track
 
 
 class ArtistSerializer(serializers.ModelSerializer):
@@ -39,3 +39,9 @@ class TopTracksSerializer(serializers.ModelSerializer):
     class Meta:
         model = TopTracks
         fields = ["position", "streams", "indicator", "track"]
+
+
+class GenreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Genre
+        fields = "__all__"
