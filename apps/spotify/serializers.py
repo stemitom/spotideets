@@ -1,4 +1,5 @@
 from enumfields.drf import EnumSupportSerializerMixin
+
 from rest_framework import serializers
 
 from apps.spotify.models import Album, Artist, Genre, TopTracks, Track

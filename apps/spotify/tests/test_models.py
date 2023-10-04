@@ -1,8 +1,9 @@
 import factory
 import pytest
+from factory.django import DjangoModelFactory
+
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from factory.django import DjangoModelFactory
 
 from apps.spotify.models import Album, Artist, Genre, SpotifyToken, Track, UserFavorite
 

@@ -1,8 +1,9 @@
 import uuid
 
+from enumfields import EnumField
+
 from django.db import models
 from django.utils import timezone
-from enumfields import EnumField
 
 from commons.enums import IndicatorEnum, TimeFrame
 

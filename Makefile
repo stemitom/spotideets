@@ -4,11 +4,11 @@ include .env.dev
 
 lint:
 	isort $(LINT_PATHS) --diff --check-only
-	pylint $(LINT_PATHS)
-	mypy $(LINT_PATHS) --install-types --non-interactive
+	ruff $(LINT_PATHS)
 
 format:
 	isort $(LINT_PATHS)
+	ruff $(LINT_PATHS) --fix
 	black $(LINT_PATHS)
 
 test:

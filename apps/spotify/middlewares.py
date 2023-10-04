@@ -2,10 +2,11 @@ from datetime import timedelta
 
 import requests
 from decouple import config
+from requests.exceptions import Timeout
+
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
-from requests.exceptions import Timeout
 
 from apps.spotify.models import SpotifyToken
 
