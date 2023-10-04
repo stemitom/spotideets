@@ -34,7 +34,7 @@ class Genre(models.Model):
         return self.name
 
 
-class Artist(models.Model):
+class Artist(TimeAndUUIDStampedBaseModel):
     artist_id = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     spotify_popularity = models.PositiveIntegerField(default=0)
@@ -46,8 +46,9 @@ class Artist(models.Model):
         return self.name
 
 
-class TopArtists(Artist, TopCharacteristics):
-    pass
+class TopArtists(TopCharacteristics):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    artist = models.OneToOneField(Artist, on_delete=models.CASCADE)
 
 
 class Album(models.Model):
@@ -58,10 +59,6 @@ class Album(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class TopAlbums(Album, TopCharacteristics):
-    pass
 
 
 class Track(TimeAndUUIDStampedBaseModel):

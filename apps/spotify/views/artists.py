@@ -2,6 +2,7 @@ from collections import Counter
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+
 from rest_framework.response import Response
 
 from apps.spotify.models import Artist, Genre, TopArtists
@@ -44,12 +45,12 @@ class TopArtistsView(SpotifyAPIView):
             TopArtists(
                 user=self.request.user,
                 artist=artist,
-                time_frame=time_frame,
+                timeframe=time_frame,
             )
             for artist in artists
         ]
 
-        TopArtists.objects.filter(user=self.request.user, time_frame=time_frame).update(artist=None)
+        TopArtists.objects.filter(user=self.request.user, timeframe=time_frame).delete()
         for top_artist in top_artists:
             top_artist.save()
 

@@ -1,4 +1,4 @@
-LINT_PATHS = spotideets/ manage.py
+LINT_PATHS = .
 
 include .env.dev
 
