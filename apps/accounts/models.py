@@ -20,6 +20,7 @@ class CustomUser(AbstractUser):
 
 
 class PrivacySettings(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="privacy_settings")
     show_streams = models.BooleanField(default=True)
     show_leaderboards = models.BooleanField(default=True)
     show_friends = models.BooleanField(default=True)
