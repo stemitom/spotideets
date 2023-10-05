@@ -12,6 +12,8 @@ class CustomUser(AbstractUser):
         null=True,
         default="Hey, I'm using spotideets",
     )
+    display_name = models.CharField(max_length=255, null=True)
+    custom_url = models.URLField(max_length=255, null=True)
 
     def __str__(self) -> str:
         return f"{self.spotify_user_id}"
@@ -20,11 +22,11 @@ class CustomUser(AbstractUser):
 class PrivacySettings(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     show_streams = models.BooleanField(default=True)
-    leaderboards = models.BooleanField(default=True)
+    show_leaderboards = models.BooleanField(default=True)
     show_friends = models.BooleanField(default=True)
-    public_profile = models.BooleanField(default=True)
-    current_playing = models.BooleanField(default=True)
-    recently_played = models.BooleanField(default=True)
+    show_public_profile = models.BooleanField(default=True)
+    show_current_playing = models.BooleanField(default=True)
+    show_recently_played = models.BooleanField(default=True)
     show_top_tracks = models.BooleanField(default=True)
     show_top_genres = models.BooleanField(default=True)
     show_top_albums = models.BooleanField(default=True)

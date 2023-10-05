@@ -17,4 +17,8 @@ urlpatterns = [
         "spotify/",
         include("apps.spotify.urls"),
     ),
+    path(
+        "accounts/",
+        include("apps.accounts.urls"),
+    ),
 ]
