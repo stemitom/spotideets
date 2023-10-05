@@ -5,8 +5,9 @@ from django.utils.decorators import method_decorator
 
 from rest_framework.response import Response
 
-from apps.spotify.models import Artist, Genre, TopArtists
-from apps.spotify.serializers import ArtistSerializer, GenreSerializer
+from apps.spotify.models import Artist, Genre, TopArtists, TopGenres
+from apps.spotify.serializers import TopArtistsSerializer, TopGenresSerializer
+from apps.spotify.util import calculate_indicator
 from apps.spotify.views.base import SpotifyAPIView
 
 
@@ -17,6 +18,7 @@ class TopArtistsView(SpotifyAPIView):
     def handle_response(self, response, time_frame):
         top_artists_data = response.json().get("items", [])
         artists = []
+        positions = []
 
         genre_counter = Counter()
 
@@ -32,15 +34,27 @@ class TopArtistsView(SpotifyAPIView):
             artist.genres.set(genres)
             genre_counter.update(genres)
             artists.append(artist)
+            positions.append(artist.artist_id)
 
+        indicators = calculate_indicator(positions)
+        print(indicators)
         Artist.objects.bulk_create(artists, ignore_conflicts=True)
 
-        genre_ids = Genre.objects.filter(name__in=genre_counter.keys()).values_list("id", flat=True)
-        top_genres = [
-            Genre.objects.get_or_create(id=genre_id, name=genre_name)[0]
-            for genre_id, genre_name in zip(genre_ids, genre_counter.keys())
-        ]
+        print(genre_counter)
+        all_genres = Genre.objects.filter(name__in=genre_counter.keys())
 
+        TopGenres.objects.filter(user=self.request.user, timeframe=time_frame).delete()
+        top_genres = [
+            TopGenres(
+                user=self.request.user,
+                genre=genre,
+                timeframe=time_frame,
+            )
+            for genre in all_genres
+        ]
+        TopGenres.objects.bulk_create(top_genres, ignore_conflicts=True)
+
+        TopArtists.objects.filter(user=self.request.user, timeframe=time_frame).delete()
         top_artists = [
             TopArtists(
                 user=self.request.user,
@@ -50,17 +64,10 @@ class TopArtistsView(SpotifyAPIView):
             for artist in artists
         ]
 
-        TopArtists.objects.filter(user=self.request.user, timeframe=time_frame).delete()
-        for top_artist in top_artists:
-            top_artist.save()
+        TopArtists.objects.bulk_create(top_artists, ignore_conflicts=True)
 
-        for artist, top_artist in zip(artists, top_artists):
-            top_artist.artist = artist
-
-        TopArtists.objects.bulk_update(top_artists, ["artist"])
-
-        artist_serializer = ArtistSerializer(artists, many=True)
-        genre_serializer = GenreSerializer(top_genres, many=True)
+        artist_serializer = TopArtistsSerializer(top_artists, many=True)
+        genre_serializer = TopGenresSerializer(top_genres, many=True)
         return Response(
             {
                 "artist": artist_serializer.data,

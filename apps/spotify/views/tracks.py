@@ -56,7 +56,7 @@ class TopTracksView(SpotifyAPIView):
             for track in tracks
         ]
 
-        TopTracks.objects.bulk_create(top_tracks)
+        TopTracks.objects.bulk_create(top_tracks, ignore_conflicts=True)
 
         serializer = TopTracksSerializer(top_tracks, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

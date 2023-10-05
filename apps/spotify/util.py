@@ -1,9 +1,12 @@
+from collections import defaultdict
+
 import requests
 
 from django.utils import timezone
 
 from apps.accounts.models import CustomUser
 from apps.spotify.models import SpotifyToken
+from commons.enums import IndicatorEnum
 
 
 def get_spotify_user_data(access_token):
@@ -53,3 +56,28 @@ def create_or_update_spotify_user(token_data):
     spotify_token.save()
 
     return user
+
+
+def calculate_indicator(current_positions):
+    """
+    Calculate the indicator based on the current positions and their previous positions.
+
+    Args:
+        current_positions (list): A list of current positions of the resources.
+
+    Returns:
+        dict: A dictionary containing resource_id as keys and their indicators ('up', 'down', 'same') as values.
+    """
+    indicators = defaultdict(lambda: "same")
+    previous_positions = defaultdict(lambda: None)
+
+    for position, resource_id in enumerate(current_positions, start=1):
+        previous_position = previous_positions[resource_id]
+        if previous_position is not None:
+            if position < previous_position:
+                indicators[resource_id] = IndicatorEnum.UP
+            elif position > previous_position:
+                indicators[resource_id] = IndicatorEnum.DOWN
+        previous_positions[resource_id] = position
+
+    return dict(indicators)
