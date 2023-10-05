@@ -2,6 +2,23 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+class CustomUser(AbstractUser):
+    username = models.CharField(max_length=255, unique=True)
+    spotify_user_email = models.EmailField(unique=True)
+    spotify_user_id = models.CharField(max_length=255, unique=True)
+    bio = models.TextField(
+        max_length=255,
+        blank=True,
+        null=True,
+        default="Hey, I'm using spotideets",
+    )
+    display_name = models.CharField(max_length=255, null=True)
+    custom_url = models.URLField(max_length=255, null=True)
+
+    def __str__(self) -> str:
+        return f"{self.spotify_user_id}"
+
+
 class PrivacySettings(models.Model):
     show_streams = models.BooleanField(default=True)
     show_leaderboards = models.BooleanField(default=True)
@@ -15,30 +32,6 @@ class PrivacySettings(models.Model):
     show_connections = models.BooleanField(default=True)
     show_top_artists = models.BooleanField(default=True)
     show_streams_stats = models.BooleanField(default=True)
-
-
-class CustomUser(AbstractUser):
-    username = models.CharField(max_length=255, unique=True)
-    spotify_user_email = models.EmailField(unique=True, blank=False, null=False)
-    spotify_user_id = models.CharField(max_length=255, unique=True, blank=False, null=False)
-    bio = models.TextField(
-        max_length=255,
-        blank=True,
-        null=True,
-        default="Hey, I'm using spotideets",
-    )
-    display_name = models.CharField(max_length=255, null=True)
-    custom_url = models.URLField(max_length=255, null=True)
-    privacy_settings = models.OneToOneField(PrivacySettings, on_delete=models.CASCADE)
-
-    def __str__(self) -> str:
-        return f"{self.spotify_user_id}"
-
-    def save(self, *args, **kwargs):
-        if not self.custom_url or self.username != CustomUser.objects.get(pk=self.pk).username:
-            self.custom_url = f'http://localhost:8000/{self.username}'
-
-        super().save(*args, **kwargs)
 
 
 class Friendship(models.Model):
