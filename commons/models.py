@@ -57,6 +57,17 @@ class SoftDeleteBaseModel(models.Model):
 
 
 class TopCharacteristics(models.Model):
+    """
+    Base model class that signifies that a particular object is a top object or represent the
+    most popular music resources. Example: TopArtists, TopTracks, TopTracks, TopAlbums
+
+    Fields:
+        position (Integer): Position of the resource instance in the list of the top characteristics
+        streams (Integer): Number of streams for particular resource instance
+        indicator ('up', 'down', 'same'): Indicator to show how resource instance has moved over time
+        timeframe ('long_term', 'medium_term', 'short_term'): What timeframe does this list represent?
+    """
+
     position = models.IntegerField(default=1)
     streams = models.PositiveIntegerField(default=1)
     indicator = EnumField(IndicatorEnum, max_length=20, default=IndicatorEnum.SAME)
