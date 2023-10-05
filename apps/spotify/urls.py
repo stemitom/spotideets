@@ -29,18 +29,18 @@ urlpatterns = [
         name="signout",
     ),
     path(
-        "top/tracks",
+        "users/<str:user_id>/top/tracks/",
         TopTracksView.as_view(),
-        name="top_track",
+        name="top-track",
     ),
     path(
-        "top/artists",
+        "users/<str:user_id>/top/artists/",
         TopArtistsView.as_view(),
-        name="top_artists",
+        name="top-artists",
     ),
     path(
         "recent",
         RecentlyPlayedView.as_view(),
-        name="recently_played",
+        name="recently-played",
     ),
 ]

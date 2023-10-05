@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 
 from rest_framework import status
 from rest_framework.response import Response
 
-from apps.spotify.models import Artist, TopTracks, Track
+from apps.spotify.models import Artist, TopTracks, Track, User
 from apps.spotify.serializers import TopTracksSerializer, TrackSerializer
 from apps.spotify.views.base import SpotifyAPIView
 from commons.enums import IndicatorEnum
@@ -17,6 +18,9 @@ class TopTracksView(SpotifyAPIView):
 
     @transaction.atomic
     def handle_response(self, response, time_frame):
+        user_id = self.kwargs.get('user_id')
+        get_object_or_404(User, spotify_user_id=user_id)
+
         top_tracks_data = response.json().get("items", [])
         tracks = []
 

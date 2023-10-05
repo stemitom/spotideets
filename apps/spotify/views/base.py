@@ -9,7 +9,7 @@ from commons.enums import TimeFrame
 class SpotifyAPIView(APIView):
     spotify_endpoint = None
 
-    def get(self, request):
+    def get(self, request, **kwargs):
         access_token = request.user.spotifytoken.access_token
         headers = {"Authorization": f"Bearer {access_token}"}
 
