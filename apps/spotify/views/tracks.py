@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.utils.decorators import method_decorator
 
 from rest_framework import status
@@ -14,11 +15,22 @@ from commons.enums import IndicatorEnum
 class TopTracksView(SpotifyAPIView):
     spotify_endpoint = "https://api.spotify.com/v1/me/top/tracks"
 
+    @transaction.atomic
     def handle_response(self, response, time_frame):
         top_tracks_data = response.json().get("items", [])
         tracks = []
 
         for track_data in top_tracks_data:
+            artists = []
+            for artist_data in track_data["artists"]:
+                artist, _ = Artist.objects.get_or_create(
+                    artist_id=artist_data["id"],
+                    defaults={
+                        "name": artist_data["name"],
+                    },
+                )
+                artists.append(artist)
+
             track, _ = Track.objects.get_or_create(
                 song_id=track_data["id"],
                 defaults={
@@ -30,16 +42,7 @@ class TopTracksView(SpotifyAPIView):
                     "spotify_preview": track_data["preview_url"],
                 },
             )
-
-            for artist_data in track_data["artists"]:
-                artist, _ = Artist.objects.get_or_create(
-                    artist_id=artist_data["id"],
-                    defaults={
-                        "name": artist_data["name"],
-                    },
-                )
-                track.artists.add(artist)
-
+            track.artists.set(artists)
             tracks.append(track)
 
         Track.objects.bulk_create(tracks, ignore_conflicts=True)

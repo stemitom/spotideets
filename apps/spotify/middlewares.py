@@ -4,10 +4,12 @@ import requests
 from decouple import config
 from requests.exceptions import Timeout
 
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import resolve, reverse
 from django.utils import timezone
 
+from apps.accounts.models import PrivacySettings
 from apps.spotify.models import SpotifyToken
 
 
@@ -69,3 +71,29 @@ class SpotifyTokenMiddleware:
             return True
 
         return False
+
+
+class PrivacyMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        user_id = resolve(request.path_info).kwargs.get('user_id')
+
+        endpoint_privacy_settings = {
+            'top_tracks': 'show_top_tracks',
+            'top_genres': 'show_top_genres',
+            'top_artists': 'show_top_artists',
+        }
+
+        endpoint_name = request.path_info.split('/')[-2]
+        privacy_setting = endpoint_privacy_settings.get(endpoint_name)
+
+        if privacy_setting:
+            if request.user.is_authenticated and request.user.id != user_id:
+                privacy_settings = PrivacySettings.objects.get(user_id=user_id)
+                if not getattr(privacy_settings, privacy_setting):
+                    raise PermissionDenied(f"Access to {privacy_setting} is denied due to privacy settings.")
+
+        response = self.get_response(request)
+        return response
