@@ -4,8 +4,8 @@ from django.db import models
 
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=255, unique=True)
-    spotify_user_email = models.EmailField(unique=True)
-    spotify_user_id = models.CharField(max_length=255, unique=True)
+    spotify_user_email = models.EmailField(unique=True, blank=False, null=False)
+    spotify_user_id = models.CharField(max_length=255, unique=True, blank=False, null=False)
     bio = models.TextField(
         max_length=255,
         blank=True,
@@ -17,6 +17,12 @@ class CustomUser(AbstractUser):
 
     def __str__(self) -> str:
         return f"{self.spotify_user_id}"
+
+    def save(self, *args, **kwargs):
+        if not self.custom_url or self.username != CustomUser.objects.get(pk=self.pk).username:
+            self.custom_url = f'http://localhost:8000/{self.username}'
+
+        super().save(*args, **kwargs)
 
 
 class PrivacySettings(models.Model):
