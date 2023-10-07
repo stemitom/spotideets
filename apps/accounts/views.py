@@ -13,11 +13,13 @@ class CustomUserRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        privacy_settings = self.request.user.privacy_settings
-        context.update({'privacy_settings': PrivacySettingsSerializer(privacy_settings).data})
-        return context
-
     def perform_update(self, serializer):
         serializer.save()
+
+
+class PrivacySettingsRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    serializer_class = PrivacySettingsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user.privacy_settings

@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.text import slugify
 
 
 class CustomUser(AbstractUser):
@@ -14,6 +15,10 @@ class CustomUser(AbstractUser):
     )
     display_name = models.CharField(max_length=255, null=True)
     custom_url = models.URLField(max_length=255, null=True)
+
+    def save(self, *args, **kwargs):
+        self.custom_url = f"/users/{slugify(self.username)}/"
+        super(CustomUser, self).save(*args, **kwargs)
 
     def __str__(self) -> str:
         return f"{self.spotify_user_id}"
