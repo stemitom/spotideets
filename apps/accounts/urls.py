@@ -6,7 +6,7 @@ app_name = "accounts"
 
 urlpatterns = [
     path(
-        "profile/",
+        "profile",
         CustomUserRetrieveUpdateAPIView.as_view(),
         name="profile",
     ),

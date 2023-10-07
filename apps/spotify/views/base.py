@@ -1,16 +1,23 @@
 import requests
 from requests import Response
 
+from django.shortcuts import get_object_or_404
+
 from rest_framework.views import APIView
 
+from apps.accounts.models import CustomUser
 from commons.enums import TimeFrame
 
 
 class SpotifyAPIView(APIView):
     spotify_endpoint = None
 
+    def dispatch(self, request, *args, **kwargs):
+        self.user = get_object_or_404(CustomUser, spotify_user_id=kwargs.get('user_id'))
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request, **kwargs):
-        access_token = request.user.spotifytoken.access_token
+        access_token = self.user.spotifytoken.access_token
         headers = {"Authorization": f"Bearer {access_token}"}
 
         time_frame = request.GET.get("time_frame", "medium_term")

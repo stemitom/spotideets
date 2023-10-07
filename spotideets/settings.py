@@ -42,6 +42,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "drf_yasg",
     "rest_framework",
+    "debug_toolbar",
 ]
 
 LOCAL_APPS = [
@@ -51,6 +52,8 @@ LOCAL_APPS = [
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
+INTERNAL_IPS = ["127.0.0.1"]
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -58,9 +61,9 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "apps.spotify.middlewares.SpotifyTokenMiddleware",
-    "apps.spotify.middlewares.PrivacyMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS = [
