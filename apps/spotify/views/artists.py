@@ -1,21 +1,22 @@
 from collections import Counter
 
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
+from django.db import transaction
 
 from rest_framework import status
 from rest_framework.response import Response
 
+from apps.spotify.decorators import check_privacy_setting
 from apps.spotify.models import Artist, Genre, TopArtists, TopGenres
 from apps.spotify.serializers import TopArtistsSerializer, TopGenresSerializer
 from apps.spotify.util import calculate_indicator
 from apps.spotify.views.base import SpotifyAPIView
 
 
-@method_decorator(login_required, name="dispatch")
 class TopArtistsView(SpotifyAPIView):
     spotify_endpoint = "https://api.spotify.com/v1/me/top/artists"
 
+    @transaction.atomic
+    @check_privacy_setting("show_top_artists")
     def handle_response(self, response, time_frame):
         top_artists_data = response.json().get("items", [])
         genre_counter = Counter()
@@ -24,7 +25,7 @@ class TopArtistsView(SpotifyAPIView):
         top_genres = []
 
         for artist_data in top_artists_data:
-            artist, created = Artist.objects.get_or_create(
+            artist, _ = Artist.objects.get_or_create(
                 artist_id=artist_data["id"],
                 defaults={
                     "name": artist_data["name"],

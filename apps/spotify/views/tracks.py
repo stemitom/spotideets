@@ -67,6 +67,8 @@ class TopTracksView(SpotifyAPIView):
 class RecentlyPlayedView(SpotifyAPIView):
     spotify_endpoint = "https://api.spotify.com/v1/me/player/recently-played"
 
+    @transaction.atomic
+    @check_privacy_setting("show_recently_played")
     def handle_response(self, response):
         recently_played_data = response.json().get("items", [])
         tracks = []
