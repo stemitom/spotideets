@@ -69,7 +69,7 @@ class RecentlyPlayedView(SpotifyAPIView):
 
     @transaction.atomic
     @check_privacy_setting("show_recently_played")
-    def handle_response(self, response):
+    def handle_response(self, response, time_frame):
         recently_played_data = response.json().get("items", [])
         tracks = []
 
@@ -84,7 +84,7 @@ class RecentlyPlayedView(SpotifyAPIView):
 
             for artist_data in track_data["track"]["artists"]:
                 artist, _ = Artist.objects.get_or_create(
-                    spotify_id=artist_data["id"],
+                    artist_id=artist_data["id"],
                     defaults={
                         "name": artist_data["name"],
                     },

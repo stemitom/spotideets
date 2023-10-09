@@ -9,37 +9,37 @@ app_name = "spotify"
 
 urlpatterns = [
     path(
-        "oauth",
+        "oauth/",
         SpotifyOAuthView.as_view(),
         name="oauth",
     ),
     path(
-        "callback",
+        "callback/",
         SpotifyOAuthCallbackView.as_view(),
         name="callback",
     ),
     path(
-        "success",
+        "success/",
         oauth_success_view,
         name="success",
     ),
     path(
-        "signout",
+        "signout/",
         oauth_logout_view,
         name="signout",
     ),
     path(
-        "users/<str:user_id>/top/tracks",
+        "users/<str:user_id>/top/tracks/",
         TopTracksView.as_view(),
         name="top-track",
     ),
     path(
-        "users/<str:user_id>/top/artists",
+        "users/<str:user_id>/top/artists/",
         TopArtistsView.as_view(),
         name="top-artists",
     ),
     path(
-        "users/streams/recent",
+        "users/<str:user_id>/streams/recent/",
         RecentlyPlayedView.as_view(),
         name="recently-played",
     ),

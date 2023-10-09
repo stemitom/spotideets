@@ -6,4 +6,4 @@ class AccountsConfig(AppConfig):
     name = "apps.accounts"
 
     def ready(self):
-        pass
+        import apps.accounts.signals  # noqa
