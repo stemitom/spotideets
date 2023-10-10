@@ -1,8 +1,6 @@
 import requests
-from requests import Response
 
-from django.shortcuts import get_object_or_404
-
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.accounts.models import CustomUser
@@ -13,12 +11,14 @@ class SpotifyAPIView(APIView):
     spotify_endpoint = None
 
     def dispatch(self, request, *args, **kwargs):
-        self.user = get_object_or_404(CustomUser, spotify_user_id=kwargs.get('user_id'))
+        self.user_id = kwargs.get('user_id')  # noqa
+        self.user = CustomUser.objects.filter(spotify_user_id=self.user_id).first()  # noqa
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, **kwargs):
+        if not self.user:
+            return Response({"error": f"User not found for id: {self.user_id}"}, status=404)
         access_token = self.user.spotifytoken.access_token
-        headers = {"Authorization": f"Bearer {access_token}"}
 
         time_frame = request.GET.get("time_frame", "medium_term")
         time_frame_map = {
@@ -35,17 +35,17 @@ class SpotifyAPIView(APIView):
 
         response = requests.get(
             self.spotify_endpoint,
-            headers=headers,
+            headers={"Authorization": f"Bearer {access_token}"},
             params={"limit": limit, "time_range": time_frame.value},
         )
 
         if response.status_code == 200:
             return self.handle_response(response, time_frame)
-        else:
-            return Response(
-                {"error": f"Failed to retrieve data from {self.spotify_endpoint}"},
-                status=response.status_code,
-            )
+
+        return Response(
+            {"error": f"Failed to retrieve data from {self.spotify_endpoint}"},
+            status=response.status_code,
+        )
 
     def handle_response(self, response, time_frame):
         raise NotImplementedError

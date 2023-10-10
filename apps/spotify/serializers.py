@@ -40,6 +40,8 @@ class TrackSerializer(serializers.ModelSerializer):
             "explicit",
             "spotify_popularity",
             "spotify_preview",
+            "last_played_at",
+            "img_url",
         ]
 
 

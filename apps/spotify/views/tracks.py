@@ -74,16 +74,20 @@ class RecentlyPlayedView(SpotifyAPIView):
         tracks = []
 
         for _, track_data in enumerate(recently_played_data):
-            track, _ = Track.objects.get_or_create(
+            track, _ = Track.objects.update_or_create(
                 song_id=track_data["track"]["id"],
                 defaults={
                     "name": track_data["track"]["name"],
                     "img_url": track_data["track"]["album"]["images"][0]["url"],
+                    "last_played_at": track_data["played_at"],
+                    "duration_ms": track_data["track"]["duration_ms"],
+                    "spotify_popularity": track_data["track"]["popularity"],
+                    "spotify_preview": track_data["track"]["preview_url"],
                 },
             )
 
             for artist_data in track_data["track"]["artists"]:
-                artist, _ = Artist.objects.get_or_create(
+                artist, _ = Artist.objects.update_or_create(
                     artist_id=artist_data["id"],
                     defaults={
                         "name": artist_data["name"],

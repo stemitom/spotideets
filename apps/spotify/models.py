@@ -42,10 +42,10 @@ class TopGenres(TopCharacteristics):
 class Artist(TimeAndUUIDStampedBaseModel):
     artist_id = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    spotify_popularity = models.PositiveIntegerField(default=0)
+    popularity = models.PositiveIntegerField(default=0)
     genres = models.ManyToManyField(Genre)
     followers_count = models.IntegerField(default=0)
-    image_url = models.URLField()
+    img_url = models.URLField()
 
     def __str__(self):
         return self.name
@@ -69,13 +69,18 @@ class Album(models.Model):
 class Track(TimeAndUUIDStampedBaseModel):
     song_id = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    img_url = models.URLField()
+    img_url = models.URLField(null=True)
+    song_url = models.URLField(null=True)
     artists = models.ManyToManyField(Artist, related_name="tracks")
     albums = models.ManyToManyField(Album, related_name="tracks")
     duration_ms = models.PositiveBigIntegerField(default=0)
-    spotify_popularity = models.IntegerField(default=0)
-    spotify_preview = models.URLField(null=True)
+    popularity = models.IntegerField(default=0)
+    preview_url = models.URLField(null=True)
     explicit = models.BooleanField(default=False)
+    last_played_at = models.DateTimeField(null=True)
+    disc_number = models.PositiveSmallIntegerField(default=0)
+    track_number = models.PositiveIntegerField(default=0)
+    is_local = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -84,11 +89,3 @@ class Track(TimeAndUUIDStampedBaseModel):
 class TopTracks(TopCharacteristics):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     track = models.OneToOneField(Track, on_delete=models.CASCADE)
-
-
-class Follower(models.Model):
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE, related_name="followers")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
-
-    def __str__(self):
-        return f"{self.user.username} follows {self.artist.name}"
