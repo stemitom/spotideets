@@ -37,8 +37,8 @@ class TopTracksView(SpotifyAPIView):
                     "img_url": track_data["album"]["images"][0]["url"],
                     "duration_ms": track_data["duration_ms"],
                     "explicit": track_data["explicit"],
-                    "spotify_popularity": track_data["popularity"],
-                    "spotify_preview": track_data["preview_url"],
+                    "popularity": track_data["popularity"],
+                    "preview_url": track_data["preview_url"],
                 },
             )
             track.artists.set(artists)
@@ -81,8 +81,8 @@ class RecentlyPlayedView(SpotifyAPIView):
                     "img_url": track_data["track"]["album"]["images"][0]["url"],
                     "last_played_at": track_data["played_at"],
                     "duration_ms": track_data["track"]["duration_ms"],
-                    "spotify_popularity": track_data["track"]["popularity"],
-                    "spotify_preview": track_data["track"]["preview_url"],
+                    "popularity": track_data["track"]["popularity"],
+                    "preview_url": track_data["track"]["preview_url"],
                 },
             )
 
