@@ -38,6 +38,7 @@ class TopArtistsView(SpotifyAPIView):
 
             top_artists.append(TopArtists(user=self.request.user, artist=artist, timeframe=time_frame))
 
+        # TODO: implement calculate_indicator to help with understanding changes in top data rank
         indicators = calculate_indicator([artist.artist_id for artist in top_artists])
 
         all_genres = Genre.objects.filter(name__in=genre_counter.keys())
