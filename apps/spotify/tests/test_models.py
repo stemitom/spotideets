@@ -5,7 +5,7 @@ from factory.django import DjangoModelFactory
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-from apps.spotify.models import Album, Artist, Genre, SpotifyToken, Track, UserFavorite
+from apps.spotify.models import Album, Artist, Genre, SpotifyToken, Track
 
 User = get_user_model()
 
@@ -55,14 +55,6 @@ class TrackFactory(DjangoModelFactory):
         model = Track
 
     title = factory.Faker("sentence")
-
-
-class UserFavoriteFactory(DjangoModelFactory):
-    class Meta:
-        model = UserFavorite
-
-    user = factory.SubFactory(UserFactory)
-    track = factory.SubFactory(TrackFactory)
 
 
 @pytest.mark.django_db
