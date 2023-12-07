@@ -13,7 +13,7 @@ class SpotifyAPIView(APIView):
     spotify_endpoint = None
 
     def dispatch(self, request, *args, **kwargs):
-        self.user = get_object_or_404(CustomUser, spotify_user_id=kwargs.get('user_id'))
+        self.user = get_object_or_404(CustomUser, spotify_user_id=kwargs.get("user_id"))
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, **kwargs):
