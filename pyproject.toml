@@ -103,3 +103,9 @@ known_first_party = "spotideets"
 known_rest_framework = "rest_framework"
 skip_glob = ["**/.venv/*", "**/migrations/*"]
 sections = ["FUTURE","STDLIB","THIRDPARTY","DJANGO", "REST_FRAMEWORK", "FIRSTPARTY","LOCALFOLDER"]
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "spotideets.settings"
