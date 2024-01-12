@@ -37,7 +37,9 @@ def create_or_update_spotify_user(token_data):
     user_data = get_spotify_user_data(token_data["access_token"])
 
     user, _ = CustomUser.objects.get_or_create(
-        spotify_user_email=user_data["email"], spotify_user_id=user_data["id"]
+        spotify_user_email=user_data["email"], 
+        spotify_user_id=user_data["id"],
+        defaults={'username': user_data["id"]}
     )
 
     try:
