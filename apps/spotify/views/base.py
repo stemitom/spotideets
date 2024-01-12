@@ -20,12 +20,8 @@ class SpotifyAPIView(APIView):
         access_token = self.user.spotifytoken.access_token
         headers = {"Authorization": f"Bearer {access_token}"}
 
-        time_frame = request.GET.get("time_frame", "medium_term")
-        time_frame_map = {
-            "weeks": TimeFrame.SHORT_TERM,
-            "months": TimeFrame.MEDIUM_TERM,
-            "lifetime": TimeFrame.LONG_TERM,
-        }
+        time_frame = request.GET.get("range", "medium_term")
+        time_frame_map = {"weeks": TimeFrame.SHORT_TERM, "months": TimeFrame.MEDIUM_TERM, "lifetime": TimeFrame.LONG_TERM}
         time_frame = time_frame_map.get(time_frame, TimeFrame.MEDIUM_TERM)
 
         try:
@@ -33,11 +29,10 @@ class SpotifyAPIView(APIView):
         except ValueError:
             limit = 10
 
-        response = requests.get(
-            self.spotify_endpoint,
-            headers=headers,
-            params={"limit": limit, "time_range": time_frame.value},
-        )
+        response = requests.get(self.spotify_endpoint, headers=headers, params = {
+            "limit": limit,
+            "time_range": time_frame.value
+        })
 
         if response.status_code == 200:
             return self.handle_response(response, time_frame)
