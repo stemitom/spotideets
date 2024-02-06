@@ -1,4 +1,3 @@
-from collections import defaultdict
 from typing import Any, Dict, List, Optional
 
 import requests
@@ -6,7 +5,6 @@ from django.utils import timezone
 
 from apps.accounts.models import CustomUser
 from apps.spotify.models import SpotifyToken
-from commons.enums import IndicatorEnum
 
 
 def get_spotify_user_data(access_token: str) -> Optional[Dict[str, Any]]:
