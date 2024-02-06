@@ -1,18 +1,14 @@
 from django.db import transaction
-
 from rest_framework import status
-from rest_framework.decorators import permission_classes
 from rest_framework.response import Response
 
 from apps.spotify.decorators import check_privacy_setting
 from apps.spotify.models import Artist, TopTracks, Track
-from apps.spotify.permissions import PrivacySettingPermission
 from apps.spotify.serializers import TopTracksSerializer, TrackSerializer
 from apps.spotify.views.base import SpotifyAPIView
 from commons.enums import IndicatorEnum
 
 
-@permission_classes([PrivacySettingPermission('show_top_tracks')])
 class TopTracksView(SpotifyAPIView):
     spotify_endpoint = "https://api.spotify.com/v1/me/top/tracks"
 
@@ -71,7 +67,7 @@ class RecentlyPlayedView(SpotifyAPIView):
 
     @transaction.atomic
     @check_privacy_setting("show_recently_played")
-    def handle_response(self, response):
+    def handle_response(self, response, time_frame):
         recently_played_data = response.json().get("items", [])
         tracks = []
 

@@ -1,8 +1,6 @@
 import requests
-from requests import Response
-
 from django.shortcuts import get_object_or_404
-
+from requests import Response
 from rest_framework.views import APIView
 
 from apps.accounts.models import CustomUser
@@ -20,19 +18,11 @@ class SpotifyAPIView(APIView):
         access_token = self.user.spotifytoken.access_token
         headers = {"Authorization": f"Bearer {access_token}"}
 
-        time_frame = request.GET.get("range", "medium_term")
-        time_frame_map = {"weeks": TimeFrame.SHORT_TERM, "months": TimeFrame.MEDIUM_TERM, "lifetime": TimeFrame.LONG_TERM}
-        time_frame = time_frame_map.get(time_frame, TimeFrame.MEDIUM_TERM)
+        time_frame = self.get_time_frame(request)
+        limit = self.get_limit(request)
 
-        try:
-            limit = int(request.GET.get("limit", 20))
-        except ValueError:
-            limit = 10
-
-        response = requests.get(self.spotify_endpoint, headers=headers, params = {
-            "limit": limit,
-            "time_range": time_frame.value
-        })
+        params = {"limit": limit, "time_range": time_frame.value}
+        response = requests.get(self.spotify_endpoint, headers=headers, params=params)
 
         if response.status_code == 200:
             return self.handle_response(response, time_frame)
@@ -41,6 +31,21 @@ class SpotifyAPIView(APIView):
                 {"error": f"Failed to retrieve data from {self.spotify_endpoint}"},
                 status=response.status_code,
             )
+
+    def get_time_frame(self, request):
+        time_frame_map = {
+            "weeks": TimeFrame.SHORT_TERM,
+            "months": TimeFrame.MEDIUM_TERM,
+            "lifetime": TimeFrame.LONG_TERM,
+        }
+        time_frame = time_frame_map.get(request.GET.get("range", "medium_term"), TimeFrame.MEDIUM_TERM)
+        return time_frame
+
+    def get_limit(self, request):
+        try:
+            return int(request.GET.get("limit", 20))
+        except ValueError:
+            return 10
 
     def handle_response(self, response, time_frame):
         raise NotImplementedError

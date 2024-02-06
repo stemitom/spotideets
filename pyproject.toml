@@ -24,6 +24,8 @@ pre-commit = "^3.4.0"
 factory-boy = "^3.3.0"
 drf-writable-nested = "^0.7.0"
 django-debug-toolbar = "^4.2.0"
+types-requests = "^2.31.0.20240125"
+django-types = "^0.19.1"
 
 [tool.poetry.dev-dependencies]
 ruff = "^0.0.282"

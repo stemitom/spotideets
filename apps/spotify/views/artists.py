@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from apps.spotify.decorators import check_privacy_setting
 from apps.spotify.models import Artist, Genre, TopArtists, TopGenres
 from apps.spotify.serializers import TopArtistsSerializer, TopGenresSerializer
-from apps.spotify.util import calculate_indicator
 from apps.spotify.views.base import SpotifyAPIView
 
 
@@ -38,8 +37,6 @@ class TopArtistsView(SpotifyAPIView):
 
             top_artists.append(TopArtists(user=self.request.user, artist=artist, timeframe=time_frame))
 
-        indicators = calculate_indicator([artist.artist_id for artist in top_artists])
-
         all_genres = Genre.objects.filter(name__in=genre_counter.keys())
         top_genres = [TopGenres(user=self.request.user, genre=genre, timeframe=time_frame) for genre in all_genres]
         TopGenres.objects.bulk_create(top_genres, ignore_conflicts=True)
@@ -49,6 +46,6 @@ class TopArtistsView(SpotifyAPIView):
         artist_serializer = TopArtistsSerializer(top_artists, many=True).data
         genre_serializer = TopGenresSerializer(top_genres, many=True).data
 
-        response_data = {"artist": artist_serializer, "top_genres": genre_serializer, "indicators": indicators}
+        response_data = {"artist": artist_serializer, "top_genres": genre_serializer}
 
         return Response(response_data, status=status.HTTP_200_OK)

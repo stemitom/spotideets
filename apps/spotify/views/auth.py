@@ -1,13 +1,16 @@
 import requests
 from decouple import config
-
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseBadRequest, HttpResponseRedirect
+from django.http import (
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponsePermanentRedirect,
+    HttpResponseRedirect,
+)
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-
 from rest_framework.views import APIView
 
 from apps.spotify.util import create_or_update_spotify_user
@@ -18,7 +21,7 @@ class SpotifyOAuthView(APIView):
     View for initiating the Spotify OAuth flow.
     """
 
-    def get(self, request):
+    def get(self, request) -> HttpResponseRedirect | HttpResponsePermanentRedirect | None:
         spotify_auth_url = "https://accounts.spotify.com/authorize"
         scopes = config("SPOTIFY_PERMISSION_SCOPES")
         params = {
@@ -42,7 +45,8 @@ class SpotifyOAuthView(APIView):
             .url
         )
 
-        return redirect(spotify_auth_url)
+        if spotify_auth_url:
+            return redirect(spotify_auth_url)
 
 
 class SpotifyOAuthCallbackView(View):
@@ -50,7 +54,7 @@ class SpotifyOAuthCallbackView(View):
     View for handling the callback after Spotify OAuth authentication.
     """
 
-    def get(self, request):
+    def get(self, request) -> HttpResponseBadRequest | HttpResponseRedirect:
         code = request.GET.get("code")
         if not code:
             return HttpResponseBadRequest("Authorization code missing")
@@ -86,7 +90,7 @@ class SpotifyOAuthCallbackView(View):
 
 
 @login_required
-def oauth_logout_view(request):
+def oauth_logout_view(request) -> HttpResponseRedirect:
     """
     View for logging out the user.
     """
@@ -94,14 +98,14 @@ def oauth_logout_view(request):
     return HttpResponseRedirect(reverse_lazy("index"))
 
 
-def oauth_success_view(request):
+def oauth_success_view(request) -> HttpResponse:
     """
     View for displaying the success page after
     """
     return render(request, "oauth-success.html")
 
 
-def oauth_index_view(request):
+def oauth_index_view(request) -> HttpResponse:
     """
     View for displaying the home page for Spotify OAuth authentication.
     """
