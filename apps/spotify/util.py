@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Optional
 
 import requests
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from apps.accounts.models import CustomUser
@@ -68,3 +69,11 @@ def create_or_update_spotify_user(token_data):
     spotify_token.save()
 
     return user
+
+
+def make_spotify_api_request(user_id: str, endpoint: str, params=None):
+    user = get_object_or_404(CustomUser, spotify_user_id=user_id)
+    access_token = user.spotifytoken.access_token
+    headers = {"Authorization": f"Bearer {access_token}"}
+    response = requests.get(endpoint, headers=headers, params=params)
+    return response

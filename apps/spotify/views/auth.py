@@ -1,16 +1,13 @@
 import requests
 from decouple import config
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import (
-    HttpResponse,
-    HttpResponseBadRequest,
-    HttpResponsePermanentRedirect,
-    HttpResponseRedirect,
-)
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponsePermanentRedirect, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
+
 from rest_framework.views import APIView
 
 from apps.spotify.util import create_or_update_spotify_user

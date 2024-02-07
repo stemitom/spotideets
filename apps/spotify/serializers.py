@@ -39,7 +39,7 @@ class TrackSerializer(serializers.ModelSerializer):
             "duration_ms",
             "explicit",
             "spotify_popularity",
-            "spotify_preview",
+            "spotify_preview_url",
         ]
 
 
