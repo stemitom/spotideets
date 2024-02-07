@@ -1,21 +1,22 @@
-from functools import wraps
-
 from rest_framework.response import Response
 
+from apps.accounts.models import CustomUser
 
-def check_privacy_setting(setting_key):
+
+def check_privacy_settings(permission):
     def decorator(view_func):
-        @wraps(view_func)
-        def _wrapped_view(self, *args, **kwargs):
-            param_user = self.user
-            if self.request.user.is_authenticated and param_user == self.request.user:
-                return view_func(self, *args, **kwargs)
+        def _wrapped_view(request, *args, **kwargs):
+            user_id = kwargs.get("user_id")
+            user = CustomUser.objects.get(spotify_user_id=user_id)
+            privacy_settings = user.privacy_settings
 
-            privacy_settings = param_user.privacy_settings
-            if not getattr(privacy_settings, setting_key, True):
+            if request.user and request.user.id == user_id:
+                return view_func(request, *args, **kwargs)
+
+            if not getattr(privacy_settings, permission):
                 return Response({"detail": "Access denied due to privacy settings."}, status=403)
 
-            return view_func(self, *args, **kwargs)
+            return view_func(request, *args, **kwargs)
 
         return _wrapped_view
 
