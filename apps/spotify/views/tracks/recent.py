@@ -1,10 +1,11 @@
 from django.shortcuts import get_object_or_404
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from apps.accounts.models import CustomUser
-from apps.spotify.models import Artist, Track
 from apps.spotify.decorators import check_privacy_settings
+from apps.spotify.models import Artist, Track
 from apps.spotify.serializers import TrackSerializer
 from apps.spotify.util import make_spotify_api_request
 

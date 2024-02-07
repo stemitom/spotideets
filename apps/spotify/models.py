@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
-from apps import spotify
 
 from commons.models import TimeAndUUIDStampedBaseModel, TopCharacteristics
 
