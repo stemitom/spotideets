@@ -90,7 +90,7 @@ class UserArtistRelation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="artist_relations")
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE, related_name="user_relations")
     position = models.IntegerField()
-    indicator = models.CharField(max_length=10, blank=True, null=True)  # "UP", "DOWN", "NEW", or None
+    indicator = models.CharField(max_length=10, blank=True, null=True)
     date = models.DateField(default=timezone.now)
 
 

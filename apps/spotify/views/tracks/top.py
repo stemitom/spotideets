@@ -1,17 +1,16 @@
 from django.shortcuts import get_object_or_404
-
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from apps.accounts.models import CustomUser
+from apps.spotify.decorators import check_privacy_settings
 from apps.spotify.models import Artist, Track, UserTrackRelation
 from apps.spotify.serializers import TrackSerializer
 from apps.spotify.util import make_spotify_api_request
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@check_privacy_settings("show_top_tracks")
 def top_tracks_view(request, user_id):
     user = get_object_or_404(CustomUser, spotify_user_id=user_id)
     spotify_endpoint = "https://api.spotify.com/v1/me/top/tracks"

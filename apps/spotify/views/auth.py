@@ -72,6 +72,8 @@ class SpotifyOAuthCallbackView(View):
 
         try:
             spotify_user = create_or_update_spotify_user(token_data)
+            if not spotify_user:
+                return HttpResponseBadRequest("Error creating or retrieving user...")
             authenticated_user = authenticate(
                 request,
                 spotify_user_email=spotify_user.spotify_user_email,

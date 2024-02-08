@@ -1,3 +1,4 @@
+from typing import List, Dict, Any
 from django.shortcuts import get_object_or_404
 
 from rest_framework.decorators import api_view
@@ -12,7 +13,7 @@ from apps.spotify.util import make_spotify_api_request
 
 @api_view(["GET"])
 @check_privacy_settings("show_recently_played")
-def recently_played_view(request, user_id):
+def recently_played_view(request, user_id: str) -> Response:
     user = get_object_or_404(CustomUser, spotify_user_id=user_id)
     spotify_endpoint = "https://api.spotify.com/v1/me/player/recently-played"
     params = {"limit": request.query_params.get("limit", 20)}
@@ -28,7 +29,7 @@ def recently_played_view(request, user_id):
         )
 
 
-def process_recently_played_data(spotify_tracks):
+def process_recently_played_data(spotify_tracks: List[Dict[str, Any]]) -> List:
     processed_tracks = []
     for item in spotify_tracks:
         spotify_track = item["track"]
