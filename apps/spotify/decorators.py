@@ -4,6 +4,9 @@ from apps.accounts.models import CustomUser
 
 
 def check_privacy_settings(permission):
+    """
+    Permission decorator to add access check on endpoints for specific resources e.g (top tracks, top artists)
+    """
     def decorator(view_func):
         def _wrapped_view(request, *args, **kwargs):
             user_id = kwargs.get("user_id")
