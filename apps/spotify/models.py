@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
 
-from commons.models import TimeAndUUIDStampedBaseModel, TopCharacteristics
+from commons.models import TimeAndUUIDStampedBaseModel
 
 User = get_user_model()
 
@@ -17,7 +17,7 @@ class SpotifyToken(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     expires_at = models.DateTimeField()
 
-    def is_token_expired(self):
+    def is_token_expired(self) -> bool:
         return timezone.now() > self.expires_at
 
     def save(self, *args, **kwargs):
@@ -30,13 +30,8 @@ class SpotifyToken(models.Model):
 class Genre(models.Model):
     name = models.CharField(max_length=255)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
-
-
-class TopGenres(TopCharacteristics):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    genre = models.OneToOneField(Genre, on_delete=models.CASCADE)
 
 
 class Artist(TimeAndUUIDStampedBaseModel):
@@ -47,13 +42,8 @@ class Artist(TimeAndUUIDStampedBaseModel):
     followers_count = models.IntegerField(default=0)
     img_url = models.URLField(max_length=100, null=True, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
-
-
-class TopArtists(TopCharacteristics):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    artist = models.OneToOneField(Artist, on_delete=models.CASCADE)
 
 
 class Album(models.Model):
@@ -62,7 +52,7 @@ class Album(models.Model):
     image = models.URLField()
     release_date = models.DateField(blank=True, null=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -77,13 +67,8 @@ class Track(TimeAndUUIDStampedBaseModel):
     spotify_preview_url = models.URLField(null=True)
     explicit = models.BooleanField(default=False)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
-
-
-class TopTracks(TopCharacteristics):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    track = models.OneToOneField(Track, on_delete=models.CASCADE)
 
 
 class UserArtistRelation(models.Model):
