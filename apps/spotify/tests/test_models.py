@@ -73,7 +73,7 @@ def test_spotify_token_model():
     assert token.access_token != ""
     assert token.refresh_token != ""
     assert token.token_type != ""
-    assert token.expires_in > 0
+    assert token.expires_in. > 0
     assert token.expires_in > 0
     assert token.created_at <= timezone.now()
 

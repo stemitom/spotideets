@@ -65,7 +65,9 @@ def process_spotify_tracks_data(user, spotify_tracks):
         processed_tracks.append(track_data)
 
         UserTrackRelation.objects.update_or_create(
-            user=user, track=track, defaults={"position": index, "indicator": indicator}
+            user=user,
+            track=track,
+            defaults={"position": index, "indicator": indicator},
         )
 
     return processed_tracks

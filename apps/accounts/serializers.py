@@ -6,7 +6,7 @@ from .models import CustomUser, PrivacySettings
 class PrivacySettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = PrivacySettings
-        exclude = ('user', 'id')
+        exclude = ("user", "id")
 
 
 class CustomUserRetrieveUpdateSerializer(serializers.ModelSerializer):
@@ -24,4 +24,4 @@ class CustomUserRetrieveUpdateSerializer(serializers.ModelSerializer):
             "privacy_settings",
         )
 
-        read_only_fields = ['custom_url', 'spotify_user_email', 'spotify_user_id', 'privacy_settings']
+        read_only_fields = ["custom_url", "spotify_user_email", "spotify_user_id", "privacy_settings"]
